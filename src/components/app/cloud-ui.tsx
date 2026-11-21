@@ -4,7 +4,6 @@ import { ChevronsUpDown, Cloud, CloudOff, Loader2, LogOut, RefreshCw, Settings, 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
-import { Panel } from './page'
 import { useCloud, type SyncStatus } from '@/lib/cloud'
 import { useStore } from '@/lib/store'
 import { cashSummary } from '@/lib/finance'
@@ -27,73 +26,6 @@ const LABEL: Record<SyncStatus, string> = {
 
 const tone = (s: SyncStatus) =>
   s === 'synced' ? 'text-income' : s === 'error' || s === 'setup-needed' || s === 'conflict' ? 'text-expense' : s === 'offline' ? 'text-upcoming' : 'text-muted-foreground'
-
-/** Settings → Account & sync */
-export function AccountPanel() {
-  const cloud = useCloud()
-  if (!cloud.configured)
-    return (
-      <Panel title="Account & sync" className="lg:col-span-2">
-        <p className="text-sm text-muted-foreground">
-          Cloud sync is off. Add <code className="rounded bg-muted px-1">VITE_SUPABASE_URL</code> and <code className="rounded bg-muted px-1">VITE_SUPABASE_PUBLISHABLE_KEY</code> to <code className="rounded bg-muted px-1">.env.local</code> and restart the app.
-        </p>
-      </Panel>
-    )
-
-  if (cloud.session) {
-    const s = cloud.status
-    return (
-      <Panel title="Account & sync" className="lg:col-span-2">
-        <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
-          <div className="grid gap-1 text-sm">
-            <div>
-              Signed in as <b>{cloud.session.user.email}</b>
-            </div>
-            <div className={cn('flex items-center gap-1.5 text-xs', tone(s))}>
-              {LABEL[s]}
-              {s === 'synced' && cloud.lastSyncedAt && <span className="text-muted-foreground">· last saved {format(parseISO(cloud.lastSyncedAt), 'd MMM, HH:mm')}</span>}
-            </div>
-            {cloud.error && (s === 'error' || s === 'offline') && <div className="text-xs text-expense">{cloud.error}</div>}
-            <p className="text-xs text-muted-foreground">Changes save to the cloud automatically and appear on your other signed-in devices. This device keeps an offline copy.</p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => void cloud.syncNow()} disabled={s === 'saving' || s === 'connecting' || s === 'conflict'}>
-              <RefreshCw /> Sync now
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={async () => {
-                await cloud.signOut()
-                toast('Signed out — your data stays on this device')
-              }}
-            >
-              <LogOut /> Sign out
-            </Button>
-          </div>
-        </div>
-        {s === 'setup-needed' && (
-          <div className="mt-4 rounded-xl bg-expense-soft p-3 text-sm">
-            <div className="font-medium text-expense">Your Supabase project needs one-time setup</div>
-            <p className="mt-1 text-foreground/80">
-              Open your Supabase dashboard → SQL Editor, paste the contents of <code className="rounded bg-card px-1">supabase/migrations/20261121120000_pocketledger_schema.sql</code>, run it, then press Sync now.
-            </p>
-          </div>
-        )}
-      </Panel>
-    )
-  }
-
-  return (
-    <Panel title="Account" description={cloud.demo ? "You're in demo mode. Nothing you change here is saved. Create an account to track your own money." : 'Sign in to use PocketLedger.'} className="lg:col-span-2">
-      <div className="flex flex-wrap gap-2">
-        <Button onClick={() => cloud.exitDemo('register')}>Create free account</Button>
-        <Button variant="outline" onClick={() => cloud.exitDemo('login')}>
-          Sign in
-        </Button>
-      </div>
-    </Panel>
-  )
-}
 
 /** Shown when this device and the cloud both hold different real data. */
 export function ConflictDialog() {
