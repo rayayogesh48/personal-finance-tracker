@@ -61,7 +61,7 @@ export function TransactionsPage() {
         description="Only completed transactions change your balance."
         actions={
           <>
-            <Button variant="outline" onClick={() => exportCsv(rows, data, filtered ? 'pocketledger-filtered' : 'pocketledger-transactions')} disabled={!rows.length}>
+            <Button variant="outline" onClick={() => exportCsv(rows, data, filtered ? 'my-ullu-filtered' : 'my-ullu-transactions')} disabled={!rows.length}>
               <Download /> Export CSV
             </Button>
             <Button onClick={() => openNew({ kind: 'expense' })}>Add transaction</Button>

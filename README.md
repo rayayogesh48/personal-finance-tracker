@@ -1,4 +1,6 @@
-# PocketLedger
+# My Ullu
+
+Live: https://my-ullu.vercel.app
 
 Simple, private personal finance tracker — React 19, TypeScript, Tailwind CSS v4, shadcn/ui (Radix), Recharts. Data lives in your browser (`localStorage`, key `pocketledger:v1`).
 

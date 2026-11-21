@@ -549,8 +549,8 @@ export function InviteForm({ group, role, onDone }: { group: Group; role: GroupR
 
   const gmail = useMemo(() => {
     if (!result) return ''
-    const su = `${result.inviter} invited you to ${group.name} on PocketLedger`
-    const body = `Hi,\n\nI've invited you to join "${group.name}" on PocketLedger so we can save and track our shared money together.\n\nJoin here (sign in or create an account with this email address):\n${result.link}\n\nThe link works once and expires in 7 days.`
+    const su = `${result.inviter} invited you to ${group.name} on My Ullu`
+    const body = `Hi,\n\nI've invited you to join "${group.name}" on My Ullu so we can save and track our shared money together.\n\nJoin here (sign in or create an account with this email address):\n${result.link}\n\nThe link works once and expires in 7 days.`
     return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email.trim())}&su=${encodeURIComponent(su)}&body=${encodeURIComponent(body)}`
   }, [result, email, group.name])
 
@@ -613,7 +613,7 @@ export function InviteForm({ group, role, onDone }: { group: Group; role: GroupR
 
   return (
     <form onSubmit={submit} className="grid gap-4 pb-2" noValidate>
-      <Field label="Their email address" hint="They'll sign in or create a PocketLedger account with this email to join.">
+      <Field label="Their email address" hint="They'll sign in or create a My Ullu account with this email to join.">
         <Input type="email" autoFocus value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@gmail.com" />
       </Field>
       <Field label="Role">

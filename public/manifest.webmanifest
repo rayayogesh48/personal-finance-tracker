@@ -1,0 +1,15 @@
+{
+  "name": "My Ullu",
+  "short_name": "My Ullu",
+  "description": "Track income, spending, debts, bills and shared savings in one place.",
+  "start_url": "/#/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8f9fb",
+  "theme_color": "#f8f9fb",
+  "icons": [
+    { "src": "/brand/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/brand/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/brand/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

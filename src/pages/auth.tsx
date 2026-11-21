@@ -1,9 +1,10 @@
 import { useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
-import { ArrowRight, Check, Eye, EyeOff, Loader2, Mail, MailCheck, ShieldCheck, Smartphone, Wallet, Cloud, Sparkles } from 'lucide-react'
+import { ArrowRight, Check, Eye, EyeOff, Loader2, Mail, MailCheck, ShieldCheck, Smartphone, Cloud, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/lib/auth'
+import { APP_NAME, Logo } from '@/components/app/logo'
 import { InviteBanner } from '@/components/groups/invite-gate'
 import { APP_URL, supabase } from '@/lib/supabase'
 import { go } from '@/lib/router'
@@ -19,10 +20,10 @@ function AuthLayout({ children }: { children: ReactNode }) {
       {/* Brand panel */}
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-hero p-10 text-hero-fg lg:flex">
         <div className="flex items-center gap-2.5">
-          <span className="inline-flex size-9 items-center justify-center rounded-xl bg-hero-fg text-hero">
-            <Wallet className="size-4" />
+          <span className="inline-flex size-10 items-center justify-center rounded-xl bg-hero-fg/10">
+            <Logo className="size-8" />
           </span>
-          <span className="text-base font-semibold">PocketLedger</span>
+          <span className="text-base font-semibold">{APP_NAME}</span>
         </div>
         <div className="max-w-md">
           <h2 className="text-3xl leading-tight font-semibold tracking-tight">Know exactly where your money goes.</h2>
@@ -52,10 +53,8 @@ function AuthLayout({ children }: { children: ReactNode }) {
       <main className="flex flex-col px-5 py-6 sm:px-10">
         <div className="flex items-center justify-between lg:justify-end">
           <span className="flex items-center gap-2 text-sm font-semibold lg:hidden">
-            <span className="inline-flex size-7 items-center justify-center rounded-lg bg-foreground text-background">
-              <Wallet className="size-3.5" />
-            </span>
-            PocketLedger
+            <Logo className="size-7" />
+            {APP_NAME}
           </span>
         </div>
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">
@@ -260,7 +259,7 @@ export function LoginPage() {
         title="Sign in"
         sub={
           <>
-            New to PocketLedger?{' '}
+            New to {APP_NAME}?{' '}
             <button type="button" onClick={() => go('register')} className="font-medium text-foreground underline underline-offset-4">
               Create an account
             </button>
@@ -355,7 +354,7 @@ export function RegisterPage() {
       if (r.error) return setFormError(friendly(r.error))
       if (r.needsConfirm) setSent(true)
       else {
-        toast.success('Account created — welcome to PocketLedger')
+        toast.success(`Account created — welcome to ${APP_NAME}`)
         go('dashboard')
       }
     } finally {

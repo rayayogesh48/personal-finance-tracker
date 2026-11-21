@@ -15,7 +15,7 @@ const esc = (v: unknown) => {
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
 }
 
-export function exportCsv(txs: Transaction[], data: AppData, name = 'pocketledger-transactions') {
+export function exportCsv(txs: Transaction[], data: AppData, name = 'my-ullu-transactions') {
   const acc = (id?: string) => data.accounts.find((a) => a.id === id)?.name ?? ''
   const debt = (id?: string) => data.debts.find((x) => x.id === id)?.name ?? ''
   const header = ['Date', 'Title', 'Type', 'Category', 'Status', 'Reserved', 'Amount', 'Currency', 'Account', 'To account', 'Debt', 'Completed on', 'Notes']
@@ -27,5 +27,5 @@ export function exportCsv(txs: Transaction[], data: AppData, name = 'pocketledge
 }
 
 export function exportJson(data: AppData) {
-  download(`pocketledger-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(data, null, 2), 'application/json')
+  download(`my-ullu-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(data, null, 2), 'application/json')
 }

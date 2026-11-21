@@ -8,7 +8,7 @@ import { SyncProvider, useSync } from '@/lib/cloud'
 import { AuthProvider, useAuth } from '@/lib/auth'
 import { go } from '@/lib/router'
 import { ConflictDialog } from '@/components/app/cloud-ui'
-import { Wallet } from 'lucide-react'
+import { APP_NAME, Logo } from '@/components/app/logo'
 import { AUTH_ROUTES, useRoute, type Route } from '@/lib/router'
 import { ForgotPage, LoginPage, RegisterPage, ResetPage } from '@/pages/auth'
 import { DashboardPage } from '@/pages/dashboard'
@@ -73,9 +73,7 @@ function Splash({ label }: { label: string }) {
   // Static on purpose: a loading screen seen on every visit shouldn't animate in.
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center gap-3 bg-background text-sm text-muted-foreground" role="status" aria-live="polite">
-      <span className="inline-flex size-10 items-center justify-center rounded-xl bg-foreground text-background">
-        <Wallet className="size-5" />
-      </span>
+      <Logo className="size-14" alt={APP_NAME} />
       {label}
     </div>
   )

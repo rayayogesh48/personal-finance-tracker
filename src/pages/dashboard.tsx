@@ -65,8 +65,8 @@ export function DashboardPage() {
 
       {/* Balance card: the balance, where it's heading, and the actions that change it */}
       <section className="overflow-hidden rounded-2xl bg-hero text-hero-fg ring-1 ring-white/5" aria-label="Balance">
-        <div className="flex flex-col gap-5 p-5 sm:p-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="min-w-0">
+        <div className="flex flex-col gap-5 p-5 sm:p-6 xl:flex-row xl:items-end xl:justify-between">
+          <div className="min-w-0 shrink-0">
             <div className="flex items-center gap-1.5 text-xs text-hero-fg/60">
               Total balance
               <Tooltip delayDuration={150}>
@@ -80,7 +80,7 @@ export function DashboardPage() {
                 </TooltipContent>
               </Tooltip>
             </div>
-            <div className="mt-1 text-4xl font-semibold tracking-tight tabular sm:text-5xl">{money(cash.actual)}</div>
+            <div className="mt-1 text-4xl font-semibold tracking-tight whitespace-nowrap tabular sm:text-5xl">{money(cash.actual)}</div>
             <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
               <span
                 className={cn(
@@ -95,20 +95,20 @@ export function DashboardPage() {
             </div>
           </div>
 
-          <dl className="grid grid-cols-3 gap-4 border-t border-hero-fg/10 pt-4 text-xs lg:gap-0 lg:border-t-0 lg:pt-0 lg:[&>div]:border-l lg:[&>div]:border-hero-fg/10 lg:[&>div]:px-6 lg:[&>div:last-child]:pr-0">
+          <dl className="grid grid-cols-3 gap-4 border-t border-hero-fg/10 pt-4 text-xs xl:gap-0 xl:border-t-0 xl:pt-0 xl:[&>div]:border-l xl:[&>div]:border-hero-fg/10 xl:[&>div]:px-6 xl:[&>div:last-child]:pr-0">
             <div>
               <dt className="text-hero-fg/60">Available</dt>
-              <dd className="mt-0.5 text-sm font-semibold tabular lg:text-base">{money(cash.available)}</dd>
+              <dd className="mt-0.5 text-sm font-semibold whitespace-nowrap tabular lg:text-base">{money(cash.available)}</dd>
               {cash.reserved > 0 && <dd className="text-[11px] text-reserved tabular">{money(cash.reserved)} reserved</dd>}
             </div>
             <div>
               <dt className="text-hero-fg/60">In 90 days</dt>
-              <dd className={cn('mt-0.5 text-sm font-semibold tabular lg:text-base', in90 < 0 && 'text-hero-down')}>{money(in90)}</dd>
+              <dd className={cn('mt-0.5 text-sm font-semibold whitespace-nowrap tabular lg:text-base', in90 < 0 && 'text-hero-down')}>{money(in90)}</dd>
               <dd className="text-[11px] text-hero-fg/50 tabular">{money(in90 - cash.actual, { sign: true })}</dd>
             </div>
             <div>
               <dt className="text-hero-fg/60">Lowest ahead</dt>
-              <dd className={cn('mt-0.5 text-sm font-semibold tabular lg:text-base', low.balance < 0 && 'text-hero-down')}>{money(low.balance)}</dd>
+              <dd className={cn('mt-0.5 text-sm font-semibold whitespace-nowrap tabular lg:text-base', low.balance < 0 && 'text-hero-down')}>{money(low.balance)}</dd>
               <dd className="text-[11px] text-hero-fg/50">{fmt(low.date, 'd MMM')}</dd>
             </div>
           </dl>

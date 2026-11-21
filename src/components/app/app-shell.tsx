@@ -13,7 +13,6 @@ import {
   PiggyBank,
   Plus,
   Settings,
-  Wallet,
   Users,
   ArrowDownLeft,
   X,
@@ -26,6 +25,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Confirm } from './confirm'
 import { AccountCard } from './cloud-ui'
+import { APP_NAME, Logo } from './logo'
 import { useAuth } from '@/lib/auth'
 import { KIND_STYLE } from './badges'
 import { QUICK_ACTIONS, useTx } from './tx-dialogs'
@@ -119,11 +119,9 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
       {/* Sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r bg-surface px-3 py-5 md:flex">
         <div className="mb-6 flex items-center gap-2.5 px-2">
-          <span className="inline-flex size-8 items-center justify-center rounded-xl bg-foreground text-background">
-            <Wallet className="size-4" />
-          </span>
+          <Logo className="size-9" />
           <div className="leading-tight">
-            <div className="text-sm font-semibold">PocketLedger</div>
+            <div className="text-sm font-semibold">{APP_NAME}</div>
             <div className="text-[11px] text-muted-foreground">{data.settings.name ? `${data.settings.name}'s money` : 'Personal finance'}</div>
           </div>
         </div>
@@ -150,10 +148,8 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
       {/* Top bar */}
       <header className="sticky top-0 z-20 flex items-center justify-between gap-2 border-b bg-background/85 px-4 py-2.5 backdrop-blur md:ml-60 md:px-8">
         <div className="flex items-center gap-2 md:hidden">
-          <span className="inline-flex size-7 items-center justify-center rounded-lg bg-foreground text-background">
-            <Wallet className="size-3.5" />
-          </span>
-          <span className="text-sm font-semibold">PocketLedger</span>
+          <Logo className="size-7" />
+          <span className="text-sm font-semibold">{APP_NAME}</span>
         </div>
         <div className="hidden text-xs text-muted-foreground md:block">{(demo || data.isDemo) && <span className="rounded-full bg-upcoming-soft px-2 py-0.5 font-medium text-upcoming">{demo ? 'Demo mode' : 'Demo data'}</span>}</div>
         <div className="flex items-center gap-1">

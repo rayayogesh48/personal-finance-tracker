@@ -81,17 +81,17 @@ Deno.serve(async (req) => {
 
   const resendKey = Deno.env.get('RESEND_API_KEY')
   if (resendKey) {
-    const from = Deno.env.get('INVITE_FROM') ?? 'PocketLedger <onboarding@resend.dev>'
+    const from = Deno.env.get('INVITE_FROM') ?? 'My Ullu <onboarding@resend.dev>'
     const html = `<div style="font-family:system-ui,sans-serif;max-width:480px;margin:auto;padding:24px;color:#111">
       <p style="font-size:32px;margin:0">${esc(group?.icon ?? '👥')}</p>
       <h2 style="margin:8px 0">${esc(inviter)} invited you to “${esc(groupName)}”</h2>
-      <p>Join the group on PocketLedger to save and track shared money together.</p>
+      <p>Join the group on My Ullu to save and track shared money together.</p>
       <p><a href="${link}" style="display:inline-block;background:#111;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none">Join ${esc(groupName)}</a></p>
       <p style="color:#666;font-size:13px">Sign in or create an account with ${esc(email)} to join. The link works once and expires in 7 days.</p></div>`
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from, to: [email], subject: `${inviter} invited you to ${groupName} on PocketLedger`, html }),
+      body: JSON.stringify({ from, to: [email], subject: `${inviter} invited you to ${groupName} on My Ullu`, html }),
     })
     if (r.ok) delivered = 'resend'
     else {

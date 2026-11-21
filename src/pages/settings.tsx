@@ -245,7 +245,7 @@ function PreferencesSection() {
   const s = data.settings
   const [name, setName] = useState(s.name)
   return (
-    <Section id="preferences" title="Preferences" description="How PocketLedger greets you and shows numbers and dates.">
+    <Section id="preferences" title="Preferences" description="How My Ullu greets you and shows numbers and dates.">
       <Card>
         <Row label="Your name" hint="Used in greetings." htmlFor="pref-name">
           <Input id="pref-name" className="w-full sm:w-60" value={name} onChange={(e) => setName(e.target.value)} onBlur={() => name.trim() !== s.name && updateSettings({ name: name.trim() })} maxLength={30} placeholder="Your name" />
@@ -505,7 +505,7 @@ function DataSection() {
     if (!f) return
     try {
       const parsed = JSON.parse(await f.text())
-      if (!isAppData(parsed)) throw new Error('This file is not a PocketLedger backup')
+      if (!isAppData(parsed)) throw new Error('This file is not a My Ullu backup')
       setPending(parsed)
     } catch (e) {
       toast.error(`Couldn't restore: ${(e as Error).message}`)
