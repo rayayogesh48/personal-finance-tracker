@@ -4,6 +4,7 @@ import { ArrowRight, Check, Eye, EyeOff, Loader2, Mail, MailCheck, ShieldCheck, 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/lib/auth'
+import { InviteBanner } from '@/components/groups/invite-gate'
 import { supabase } from '@/lib/supabase'
 import { go } from '@/lib/router'
 import { cn } from '@/lib/utils'
@@ -57,7 +58,10 @@ function AuthLayout({ children }: { children: ReactNode }) {
             PocketLedger
           </span>
         </div>
-        <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">{children}</div>
+        <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">
+          <InviteBanner />
+          {children}
+        </div>
         <p className="text-center text-xs text-muted-foreground">Your data is private to your account and protected by the database.</p>
       </main>
     </div>

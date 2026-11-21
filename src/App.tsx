@@ -21,6 +21,8 @@ import { SavingsPage } from '@/pages/savings'
 import { CashFlowPage } from '@/pages/cashflow'
 import { InsightsPage } from '@/pages/insights'
 import { SettingsPage } from '@/pages/settings'
+import { GroupsPage } from '@/pages/groups'
+import { InviteGate } from '@/components/groups/invite-gate'
 
 const PAGES: Record<Route, () => React.ReactElement> = {
   dashboard: DashboardPage,
@@ -32,6 +34,7 @@ const PAGES: Record<Route, () => React.ReactElement> = {
   savings: SavingsPage,
   cashflow: CashFlowPage,
   insights: InsightsPage,
+  groups: GroupsPage,
   settings: SettingsPage,
   login: LoginPage,
   register: RegisterPage,
@@ -60,6 +63,7 @@ function Workspace() {
         </AppShell>
       )}
       <ConflictDialog />
+      <InviteGate />
       <Toaster position="top-center" theme={dark ? 'dark' : 'light'} closeButton />
     </TxProvider>
   )

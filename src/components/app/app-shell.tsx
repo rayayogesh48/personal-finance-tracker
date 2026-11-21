@@ -14,6 +14,7 @@ import {
   Plus,
   Settings,
   Wallet,
+  Users,
   ArrowDownLeft,
   X,
   type LucideIcon,
@@ -54,6 +55,10 @@ const NAV: { group: string; items: { route: Route; label: string; icon: LucideIc
       { route: 'bills', label: 'Bills & EMI', icon: CalendarClock },
       { route: 'savings', label: 'Savings goals', icon: PiggyBank },
     ],
+  },
+  {
+    group: 'Shared',
+    items: [{ route: 'groups', label: 'Groups', icon: Users }],
   },
 ]
 

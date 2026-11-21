@@ -33,6 +33,15 @@ export function money(n: number, opts: { sign?: boolean } = {}) {
   return `${sign}${c.symbol}${sep}${nf.format(Math.abs(v))}`
 }
 
+/** Format in a specific currency (groups have their own currency). */
+export function moneyIn(n: number, currency: Currency, opts: { sign?: boolean } = {}) {
+  const c = CURRENCY[currency] ?? CURRENCY.NPR
+  const v = c.decimals ? Math.round(n * 100) / 100 : Math.round(n)
+  const sign = v < 0 ? '−' : opts.sign && v > 0 ? '+' : ''
+  const f = new Intl.NumberFormat(c.locale, { minimumFractionDigits: 0, maximumFractionDigits: c.decimals })
+  return `${sign}${c.symbol}${c.symbol.length > 1 ? ' ' : ''}${f.format(Math.abs(v))}`
+}
+
 export function moneyCompact(n: number) {
   const a = Math.abs(n)
   const s = n < 0 ? '−' : ''

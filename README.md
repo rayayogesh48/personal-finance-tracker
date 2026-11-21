@@ -18,6 +18,19 @@ Setup:
 2. Run `supabase/migrations/20261121120000_pocketledger_schema.sql` in the Supabase SQL Editor (or `supabase db push`).
 3. In Supabase → Authentication → URL Configuration, add your app URL (e.g. `http://localhost:5174`) to the Redirect URLs so confirmation / magic-link emails return to the app.
 
+## Groups (shared savings & expenses)
+
+Multi-user groups for couples, families, friends or roommates — all enforced in Supabase:
+
+- Tables: `groups`, `group_members`, `group_invitations`, `group_goals`, `group_transactions`, `group_activity` (`supabase/migrations/20261121140000_groups.sql`).
+- **Reads** go through RLS (members of a group only). **Writes** go only through `SECURITY DEFINER` functions (`create_group`, `add_group_transaction`, `decide_group_transaction`, `cancel_group_transaction`, `correct_group_transaction`, `create_invitation`, `accept_invitation`, …) which check the caller's role, lock the group row (serialising concurrent members) and never let the balance go negative.
+- Balance = approved contributions − approved withdrawals − approved expenses. Pending items never count. Records are never deleted: cancel/correct keep the original and log the change.
+- Roles: owner, admin, member, viewer. Withdrawals: direct, need approval, or admins only. Optional admin confirmation of savings.
+- Invitations: 7-day, single-use tokens stored as SHA-256 hashes; accepting requires being signed in with the invited (confirmed) email.
+- Invitation email: Edge Function `supabase/functions/send-group-invite`. Uses Resend when `RESEND_API_KEY` (+ `INVITE_FROM`) secrets are set, otherwise Supabase Auth email. The app always offers **Send with Gmail** / **Copy link** as well.
+- Receipts: private storage bucket `group-receipts`, readable by group members only.
+- Add `https://<your-app>/**` to Supabase → Authentication → Redirect URLs so invite links keep their `?invite=` token.
+
 ## Deploy to Vercel
 
 1. Import this GitHub repo in Vercel (framework preset **Vite**; build `npm run build`, output `dist` — detected automatically).
