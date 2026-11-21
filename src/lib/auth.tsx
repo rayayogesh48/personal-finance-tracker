@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import { supabase } from './supabase'
+import { APP_URL, supabase } from './supabase'
 import { demoService } from './demo'
 import { clearUserCache } from './store'
 import { go } from './router'
@@ -24,7 +24,7 @@ interface Auth {
 }
 
 const Ctx = createContext<Auth | null>(null)
-const redirectTo = () => `${window.location.origin}${window.location.pathname}`
+const redirectTo = () => `${APP_URL}/`
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)

@@ -27,7 +27,8 @@ Multi-user groups for couples, families, friends or roommates — all enforced i
 - Balance = approved contributions − approved withdrawals − approved expenses. Pending items never count. Records are never deleted: cancel/correct keep the original and log the change.
 - Roles: owner, admin, member, viewer. Withdrawals: direct, need approval, or admins only. Optional admin confirmation of savings.
 - Invitations: 7-day, single-use tokens stored as SHA-256 hashes; accepting requires being signed in with the invited (confirmed) email.
-- Invitation email: Edge Function `supabase/functions/send-group-invite`. Uses Resend when `RESEND_API_KEY` (+ `INVITE_FROM`) secrets are set, otherwise Supabase Auth email. The app always offers **Send with Gmail** / **Copy link** as well.
+- Invitation email: Edge Function `supabase/functions/send-group-invite`. Emails via Resend when `RESEND_API_KEY` (+ `INVITE_FROM`) secrets are set; otherwise the app opens a ready-made **Gmail** draft (plus **Copy link**). Supabase Auth emails are deliberately not used for invites — they create placeholder accounts and consume the hourly email allowance needed for sign-up confirmations.
+- Set `VITE_APP_URL` (Vercel, production) to the app's public address so every emailed link uses it.
 - Receipts: private storage bucket `group-receipts`, readable by group members only.
 - Add `https://<your-app>/**` to Supabase → Authentication → Redirect URLs so invite links keep their `?invite=` token.
 

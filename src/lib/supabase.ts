@@ -12,3 +12,10 @@ export const supabase: SupabaseClient | null =
     : null
 
 export const cloudConfigured = !!supabase
+
+/**
+ * The one public address of the app, used in every link we email (sign-up confirmation,
+ * password reset, group invitations). Set VITE_APP_URL in production so links never point
+ * at a secondary domain alias; locally it falls back to the current origin.
+ */
+export const APP_URL = ((import.meta.env.VITE_APP_URL as string | undefined) || window.location.origin).replace(/\/+$/, '')

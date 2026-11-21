@@ -557,22 +557,29 @@ export function InviteForm({ group, role, onDone }: { group: Group; role: GroupR
   if (result)
     return (
       <div className="grid gap-4 pb-2">
-        <div className={cn('rounded-xl p-3 text-sm', result.delivered === 'failed' ? 'bg-upcoming-soft text-upcoming' : 'bg-income-soft text-income')}>
-          {result.delivered === 'failed' ? (
-            <>
-              <b>Invitation created, but the email couldn't be sent automatically.</b>
-              <span className="mt-0.5 block text-foreground/70">Send it yourself with Gmail or copy the link below.</span>
-            </>
-          ) : (
-            <>
-              <b>Invitation emailed to {email.trim()}.</b>
-              <span className="mt-0.5 block text-foreground/70">You can also send it from your own Gmail so they recognise who it's from.</span>
-            </>
-          )}
-        </div>
-        <Field label="Join link (single use · expires in 7 days)">
+        {result.delivered === 'resend' ? (
+          <div className="rounded-xl bg-income-soft p-3 text-sm text-income">
+            <b>Invitation emailed to {email.trim()}.</b>
+            <span className="mt-0.5 block text-foreground/70">You can also send it from your own Gmail so they recognise who it's from.</span>
+          </div>
+        ) : (
+          <div className="grid gap-3 rounded-xl bg-muted/60 p-4 text-sm">
+            <div>
+              <b>Invitation ready — send it to {email.trim()}</b>
+              <span className="mt-0.5 block text-muted-foreground">
+                {result.delivered === 'failed' ? "The automatic email couldn't be sent, so send it from your Gmail." : 'Open a ready-to-send email in Gmail, or copy the link and share it however you like.'}
+              </span>
+            </div>
+            <Button asChild size="lg" className="justify-self-start">
+              <a href={gmail} target="_blank" rel="noreferrer">
+                <Mail /> Send with Gmail
+              </a>
+            </Button>
+          </div>
+        )}
+        <Field label="Join link (works once · expires in 7 days)" hint={`They sign in or create an account with ${email.trim()} to join.`}>
           <div className="flex gap-2">
-            <Input readOnly value={result.link} className="font-mono text-xs" onFocus={(e) => e.target.select()} />
+            <Input readOnly value={result.link} className="font-mono text-xs" onFocus={(e) => e.target.select()} aria-label="Join link" />
             <Button
               type="button"
               variant="outline"
@@ -590,11 +597,13 @@ export function InviteForm({ group, role, onDone }: { group: Group; role: GroupR
           <Button type="button" variant="ghost" onClick={() => (setResult(null), setEmail(''))}>
             Invite someone else
           </Button>
-          <Button asChild variant="outline">
-            <a href={gmail} target="_blank" rel="noreferrer">
-              <Mail /> Send with Gmail
-            </a>
-          </Button>
+          {result.delivered === 'resend' && (
+            <Button asChild variant="outline">
+              <a href={gmail} target="_blank" rel="noreferrer">
+                <Mail /> Send with Gmail
+              </a>
+            </Button>
+          )}
           <Button type="button" onClick={onDone}>
             Done
           </Button>

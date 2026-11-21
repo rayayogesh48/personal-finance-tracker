@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/lib/auth'
 import { InviteBanner } from '@/components/groups/invite-gate'
-import { supabase } from '@/lib/supabase'
+import { APP_URL, supabase } from '@/lib/supabase'
 import { go } from '@/lib/router'
 import { cn } from '@/lib/utils'
 
@@ -201,6 +201,8 @@ function friendly(msg: string) {
   if (/invalid login credentials/i.test(msg)) return 'That email and password don’t match. Check them and try again.'
   if (/email not confirmed/i.test(msg)) return 'Please confirm your email first — check your inbox for the link we sent.'
   if (/already registered|already been registered/i.test(msg)) return 'An account with this email already exists. Try signing in instead.'
+  if (/email rate limit|over_email_send_rate_limit/i.test(msg))
+    return "We can't send more emails right now — the email service has reached its hourly limit. Please try again in about an hour."
   if (/rate limit|too many/i.test(msg)) return 'Too many attempts. Please wait a minute and try again.'
   return msg
 }
@@ -525,7 +527,7 @@ function CheckInbox({ email, what, onBack, backLabel = 'Use a different email', 
             className="h-10"
             disabled={resent}
             onClick={async () => {
-              const { error } = await supabase!.auth.resend({ type: resendType, email, options: { emailRedirectTo: `${window.location.origin}${window.location.pathname}` } })
+              const { error } = await supabase!.auth.resend({ type: resendType, email, options: { emailRedirectTo: `${APP_URL}/` } })
               if (error) toast.error(friendly(error.message))
               else {
                 setResent(true)

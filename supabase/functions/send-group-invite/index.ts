@@ -2,10 +2,13 @@
 // Creates a group invitation as the signed-in caller (permissions are enforced by the
 // create_invitation() database function) and emails the invitee a join link.
 //
-// Delivery order:
-//   1. RESEND_API_KEY set → branded email via Resend (from INVITE_FROM)
-//   2. otherwise Supabase Auth email: an "invite" for new addresses, a sign-in link for existing accounts
-// The join link is always returned so the app can also offer "Send with Gmail" / "Copy link".
+// Delivery:
+//   • RESEND_API_KEY set → branded email via Resend (from INVITE_FROM)
+//   • otherwise nothing is emailed here and the app opens a ready-made Gmail draft.
+// We deliberately do NOT use Supabase Auth emails for invitations: they create a passwordless
+// placeholder account (which then blocks normal sign-up) and use up the small hourly email
+// allowance that sign-up confirmations need.
+// The join link always points at the app's canonical address (PUBLIC_APP_URL secret if set).
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
 const cors = {
@@ -22,6 +25,8 @@ const SERVICE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
 /** Only send links that point back at this app. */
 function appOrigin(req: Request, requested?: string) {
+  const canonical = Deno.env.get('PUBLIC_APP_URL')?.replace(/\/+$/, '')
+  if (canonical) return canonical
   const allowed = (Deno.env.get('APP_URLS') ?? '').split(',').map((s) => s.trim()).filter(Boolean)
   const ok = (u?: string | null) =>
     !!u && (allowed.includes(u) || /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(u) || /^http:\/\/localhost:\d+$/.test(u))
@@ -71,7 +76,7 @@ Deno.serve(async (req) => {
   const inviter = (me.user?.user_metadata?.name as string | undefined) || me.user?.email?.split('@')[0] || 'A friend'
   const groupName = group?.name ?? 'a group'
 
-  let delivered: 'resend' | 'supabase_invite' | 'supabase_signin_link' | 'failed' = 'failed'
+  let delivered: 'resend' | 'not_sent' | 'failed' = 'not_sent'
   let deliveryError: string | undefined
 
   const resendKey = Deno.env.get('RESEND_API_KEY')
@@ -82,32 +87,22 @@ Deno.serve(async (req) => {
       <h2 style="margin:8px 0">${esc(inviter)} invited you to “${esc(groupName)}”</h2>
       <p>Join the group on PocketLedger to save and track shared money together.</p>
       <p><a href="${link}" style="display:inline-block;background:#111;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none">Join ${esc(groupName)}</a></p>
-      <p style="color:#666;font-size:13px">This invitation is for ${esc(email)} and expires in 7 days. If you weren't expecting it, you can ignore this email.</p></div>`
+      <p style="color:#666;font-size:13px">Sign in or create an account with ${esc(email)} to join. The link works once and expires in 7 days.</p></div>`
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ from, to: [email], subject: `${inviter} invited you to ${groupName} on PocketLedger`, html }),
     })
     if (r.ok) delivered = 'resend'
-    else deliveryError = `Resend: ${(await r.text()).slice(0, 200)}`
-  } else {
-    // Supabase Auth email (subject to the project's email settings and rate limits).
-    const { error } = await admin.auth.admin.inviteUserByEmail(email, {
-      redirectTo: link,
-      data: { name: undefined, invited_to_group: body.group_id },
-    })
-    if (!error) delivered = 'supabase_invite'
-    else if (/already|registered|exists/i.test(error.message)) {
-      const anon = createClient(URL_, ANON, { auth: { persistSession: false } })
-      const { error: e2 } = await anon.auth.signInWithOtp({ email, options: { emailRedirectTo: link, shouldCreateUser: false } })
-      if (!e2) delivered = 'supabase_signin_link'
-      else deliveryError = e2.message
-    } else deliveryError = error.message
+    else {
+      delivered = 'failed'
+      deliveryError = `Resend: ${(await r.text()).slice(0, 200)}`
+    }
   }
 
   await admin
     .from('group_invitations')
-    .update({ last_sent_at: new Date().toISOString(), send_count: delivered === 'failed' ? 0 : 1 })
+    .update({ last_sent_at: new Date().toISOString(), send_count: delivered === 'resend' ? 1 : 0 })
     .eq('id', row.invitation_id)
 
   return json({ invitation_id: row.invitation_id, expires_at: row.expires_at, link, delivered, delivery_error: deliveryError, group_name: groupName, inviter })

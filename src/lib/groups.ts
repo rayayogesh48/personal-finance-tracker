@@ -6,7 +6,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { addDays, addMonths, format, parseISO } from 'date-fns'
-import { supabase } from './supabase'
+import { APP_URL, supabase } from './supabase'
 import type { Currency } from './types'
 
 // ------------------------------------------------------------------ types
@@ -211,7 +211,7 @@ export const groupApi = {
   /** Creates the invitation and asks the Edge Function to email it. Always returns the join link. */
   async invite(groupId: string, email: string, role: Exclude<GroupRole, 'owner'>) {
     const { data, error } = await sb().functions.invoke('send-group-invite', {
-      body: { group_id: groupId, email, role, app_url: window.location.origin },
+      body: { group_id: groupId, email, role, app_url: APP_URL },
     })
     if (error) {
       // FunctionsHttpError carries the JSON body in context
@@ -224,7 +224,7 @@ export const groupApi = {
       }
       throw new Error(friendlyError(msg))
     }
-    return data as { invitation_id: string; link: string; delivered: 'resend' | 'supabase_invite' | 'supabase_signin_link' | 'failed'; delivery_error?: string; group_name: string; inviter: string; expires_at: string }
+    return data as { invitation_id: string; link: string; delivered: 'resend' | 'not_sent' | 'failed'; delivery_error?: string; group_name: string; inviter: string; expires_at: string }
   },
   revokeInvitation: (id: string) => rpc<void>('revoke_invitation', { p_invitation_id: id }),
   previewInvitation: async (token: string) => {
