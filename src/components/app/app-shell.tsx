@@ -25,14 +25,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Confirm } from './confirm'
-import { AccountMenu, SyncBadge } from './cloud-ui'
+import { AccountCard } from './cloud-ui'
 import { useAuth } from '@/lib/auth'
 import { KIND_STYLE } from './badges'
 import { QUICK_ACTIONS, useTx } from './tx-dialogs'
 import { go, type Route } from '@/lib/router'
 import { useStore } from '@/lib/store'
-import { alerts, cashSummary } from '@/lib/finance'
-import { money } from '@/lib/format'
+import { alerts } from '@/lib/finance'
 import { cn } from '@/lib/utils'
 import type { TxKind } from '@/lib/types'
 
@@ -75,7 +74,6 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
       return false
     }
   })
-  const cash = cashSummary(data)
   const list = alerts(data)
   const urgent = list.filter((a) => a.tone === 'danger').length
 
@@ -141,15 +139,11 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
             </div>
           ))}
           <div className="mt-auto grid gap-0.5">
-            <AccountMenu />
-            <SyncBadge />
             <NavLink route={route} r="settings" label="Settings" icon={Settings} />
           </div>
         </nav>
-        <div className="mt-4 rounded-xl border bg-card p-3">
-          <div className="text-[11px] text-muted-foreground">Available now</div>
-          <div className="text-base font-semibold tabular">{money(cash.available)}</div>
-          {cash.reserved > 0 && <div className="text-[11px] text-reserved">{money(cash.reserved)} reserved</div>}
+        <div className="mt-3">
+          <AccountCard />
         </div>
       </aside>
 
@@ -312,15 +306,8 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
                 </div>
               </div>
             ))}
-            <div onClick={() => setMore(false)}>
-              <AccountMenu />
-            </div>
-            <div className="grid grid-cols-2 gap-1">
-              <NavLink route={route} r="settings" label="Settings" icon={Settings} onClick={() => setMore(false)} />
-              <div onClick={() => setMore(false)}>
-                <SyncBadge />
-              </div>
-            </div>
+            <NavLink route={route} r="settings" label="Settings" icon={Settings} onClick={() => setMore(false)} />
+            <AccountCard onNavigate={() => setMore(false)} />
           </div>
         </SheetContent>
       </Sheet>
